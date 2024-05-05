@@ -60,3 +60,49 @@ const setSliderMax = () => {
 
 const displayBufferedAmount = () => {
     const bufferedAmount = Math.floor(audio.buffered.end(audio.buffered.length - 1));}
+
+audioPlayerCont.style.setProperty('--buffered-width', `${(bufferedAmount / seekSlider.max) * 100}%`);
+
+
+const whilePlaying = () => {
+    seekSlider.value = Math.floor(audio.currentTime);
+    currentTimeCont.textContent = calculateTime(seekSlider.value);
+    audioPlayerCont.style.setProperty('--seek-before-width', `${seekSlider.value / seekSlider.max * 100}%`);
+    
+}
+
+if (audio.readyState > 0) {
+    displayDuration();
+    setSliderMax();
+    displayBufferedAmount();
+} else {
+    audio.addEventListener('loadedmetadata', () => {
+        displayDuration();
+        setSliderMax();
+        displayBufferedAmount();
+    });
+}
+
+volumeSlider.addEventListener('input', (e) => {
+    const value = e.target.value;
+
+    outputCont.textContent = value;
+    audio.volume = value / 100;
+});
+
+navigator.mediaSession.setActionHandler('seekbackward', (details) => {
+        audio.currentTime = audio.currentTime - (details.seekOffset || 10);
+    });
+    navigator.mediaSession.setActionHandler('seekforward', (details) => {
+        audio.currentTime = audio.currentTime + (details.seekOffset || 10);
+    });
+    navigator.mediaSession.setActionHandler('seekto', (details) => {
+        if (details.fastSeek && 'fastSeek' in audio) {
+          audio.fastSeek(details.seekTime);
+          return;
+        }
+        audio.currentTime = details.seekTime;
+    });
+    navigator.mediaSession.setActionHandler('stop', () => {
+        audio.currentTime = 0;
+        seekSlider.value = 0; })
