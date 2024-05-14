@@ -32,3 +32,18 @@ html{
 
     }
 }
+
+
+h1 {
+  display: flex;
+  justify-content: center;
+  font: 2.6em "Viaoda Libre", serif;
+  color:  #63b89a;
+  
+}
+
+body {
+  font: 1.6em "Cabin", sans-serif;
+  background-color: #1d0524; 
+  color:  #1d0524;
+}
